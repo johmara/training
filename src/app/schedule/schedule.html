@@ -1,0 +1,50 @@
+<div class="page">
+  <div class="header">
+    <h1>9-Week Hybrid Training</h1>
+    <app-dark-mode-toggle></app-dark-mode-toggle>
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+
+  <div class="controls">
+    @for (b of blocks; track b.key) {
+      <button
+        class="control-btn"
+        [class.active]="selectedBlock() === b.key"
+        (click)="selectBlock(b.key)">
+        {{ b.label }}
+      </button>
+    }
+  </div>
+
+  <div class="schedule-grid">
+    @for (week of weeks(); track week.week) {
+      <div class="week-card">
+        <div class="week-header" (click)="toggleWeek(week.week)">
+          <span>Week {{ week.week }}</span>
+          <span>{{ isExpanded(week.week) ? '▲' : '▼' }}</span>
+        </div>
+        @if (isExpanded(week.week)) {
+          <div class="week-content">
+            @for (d of week.days; track d.name) {
+              <div class="day-block">
+                <div class="day-name">{{ d.name }}</div>
+                @if (d.sessionSlugs.length) {
+                  @for (slug of d.sessionSlugs; track slug) {
+                    <div class="day-session">
+                      {{ sessionBySlug.get(slug)?.name }}
+                      @if (sessionBySlug.get(slug)?.strengthBased) {
+                        <a class="action-btn session-btn" [routerLink]="['/', slug]">View Workout</a>
+                      }
+                    </div>
+                  }
+                } @else {
+                  <div class="day-session">Rest</div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

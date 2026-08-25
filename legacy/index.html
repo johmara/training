@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9-Week Hybrid Training</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .login-card {
+            background: #1e293b;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .login-card h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+            color: #60a5fa;
+        }
+
+        .login-card p {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .pin-display {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .pin-digit {
+            width: 50px;
+            height: 50px;
+            background: #0f172a;
+            border: 2px solid #475569;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        .pin-digit.filled {
+            background: #60a5fa;
+            color: #0f172a;
+            border-color: #60a5fa;
+        }
+
+        .pin-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pin-btn {
+            padding: 1rem;
+            background: #334155;
+            border: none;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .pin-btn:active {
+            background: #475569;
+            transform: scale(0.95);
+        }
+
+        .pin-btn.action {
+            grid-column: span 2;
+            background: #ef4444;
+            font-size: 1rem;
+        }
+
+        .pin-btn.action:active {
+            background: #dc2626;
+        }
+
+        .pin-btn.submit {
+            grid-column: span 2;
+            background: #10b981;
+            font-size: 1rem;
+        }
+
+        .pin-btn.submit:active {
+            background: #059669;
+        }
+
+        .app-screen {
+            display: none;
+            min-height: 100vh;
+            padding: 1rem;
+            padding-bottom: 2rem;
+            background: #0f172a;
+        }
+
+        .app-screen.active {
+            display: block;
+        }
+
+        .header {
+            background: #1e293b;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            color: #60a5fa;
+            flex: 1;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            background: #ef4444;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .logout-btn:active {
+            background: #dc2626;
+        }
+
+        .controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 0.6rem 1rem;
+            background: #334155;
+            border: none;
+            border-radius: 6px;
+            color: #e2e8f0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            -webkit-tap-highlight-color: transparent;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .control-btn:active {
+            background: #475569;
+        }
+
+        .control-btn.active {
+            background: #60a5fa;
+            color: #0f172a;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .week-card {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .week-header {
+            background: #334155;
+            padding: 1rem;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .week-header:active {
+            background: #475569;
+        }
+
+        .week-content {
+            display: none;
+            padding: 1rem;
+        }
+
+        .week-content.expanded {
+            display: block;
+        }
+
+        .day-block {
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .day-block:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .day-name {
+            font-weight: bold;
+            color: #60a5fa;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .day-session {
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            padding-left: 0;
+        }
+
+        .session-btn {
+            background: #334155;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            color: #60a5fa;
+            cursor: pointer;
+            font-size: 0.8rem;
+            -webkit-tap-highlight-color: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .session-btn:active {
+            background: #475569;
+        }
+
+        .session-exercises {
+            display: none;
+            background: #0f172a;
+            border-radius: 4px;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        .session-exercises.expanded {
+            display: block;
+        }
+
+        .exercise-list-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #334155;
+        }
+
+        .exercise-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .exercise-list-name {
+            font-weight: 600;
+            color: #60a5fa;
+        }
+
+        .exercise-list-detail {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 0.2rem;
+        }
+
+        .circuit-section {
+            background: linear-gradient(135deg, #1f3a5f 0%, #1e2d4a 100%);
+            border-left: 4px solid #60a5fa;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .circuit-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #60a5fa;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .circuit-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: #60a5fa;
+            color: #0f172a;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+
+        .finisher-section {
+            background: linear-gradient(135deg, #1f3f2f 0%, #1d2d24 100%);
+            border-left: 4px solid #10b981;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .finisher-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #10b981;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .finisher-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: #10b981;
+            color: #0f172a;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border-radius: 12px;
+            max-width: 100%;
+            width: 100%;
+            padding: 1.5rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .modal-header h2 {
+            color: #60a5fa;
+            font-size: 1.25rem;
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #e2e8f0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .exercises-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .exercise-item {
+            background: #0f172a;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #60a5fa;
+        }
+
+        .exercise-name {
+            font-weight: bold;
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+        }
+
+        .exercise-detail {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            margin-bottom: 0.25rem;
+        }
+
+        .exercise-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .video-search {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .video-search input {
+            flex: 1;
+            padding: 0.5rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #e2e8f0;
+            font-size: 0.85rem;
+            min-width: 150px;
+        }
+
+        .video-search button {
+            padding: 0.5rem 1rem;
+            background: #60a5fa;
+            border: none;
+            border-radius: 6px;
+            color: #0f172a;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .video-search button:active {
+            background: #3b82f6;
+        }
+
+        .export-btn {
+            padding: 0.75rem 1rem;
+            background: #10b981;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .export-btn:active {
+            background: #059669;
+        }
+
+        @media (min-width: 768px) {
+            .schedule-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .schedule-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .controls {
+                gap: 1rem;
+            }
+
+            .control-btn {
+                flex: none;
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <h1>🏋️ Hybrid Training</h1>
+            <p>Enter 4-digit PIN</p>
+            <div class="pin-display" id="pinDisplay">
+                <div class="pin-digit"></div>
+                <div class="pin-digit"></div>
+                <div class="pin-digit"></div>
+                <div class="pin-digit"></div>
+            </div>
+            <div class="pin-pad">
+                <button class="pin-btn" data-num="1">1</button>
+                <button class="pin-btn" data-num="2">2</button>
+                <button class="pin-btn" data-num="3">3</button>
+                <button class="pin-btn" data-num="4">4</button>
+                <button class="pin-btn" data-num="5">5</button>
+                <button class="pin-btn" data-num="6">6</button>
+                <button class="pin-btn" data-num="7">7</button>
+                <button class="pin-btn" data-num="8">8</button>
+                <button class="pin-btn" data-num="9">9</button>
+                <button class="pin-btn action" id="clearBtn">Clear</button>
+                <button class="pin-btn" data-num="0">0</button>
+                <button class="pin-btn submit" id="submitBtn">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Screen -->
+    <div class="app-screen" id="appScreen">
+        <div class="header">
+            <h1>9-Week Hybrid Training</h1>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn active" data-block="all">All Weeks</button>
+            <button class="control-btn" data-block="base">Base (1-3)</button>
+            <button class="control-btn" data-block="build">Build (4-6)</button>
+            <button class="control-btn" data-block="peak">Peak (7-9)</button>
+            <button class="control-btn export-btn" id="exportBtn">📥 Export</button>
+        </div>
+
+        <div class="schedule-grid" id="scheduleGrid"></div>
+    </div>
+
+    <!-- Session Modal -->
+    <div class="modal" id="sessionModal" onclick="if(event.target.id === 'sessionModal') closeSessionModal()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="sessionName"></h2>
+                <button class="close-modal" onclick="closeSessionModal()">&times;</button>
+            </div>
+            <div id="sessionDetails"></div>
+        </div>
+    </div>
+
+    <script>
+        const CORRECT_PIN = '1234';
+        let currentPin = '';
+
+        // Session descriptions with format info
+        const sessionDescriptions = {
+            'Power Circuit W1': '<strong>Format: Circuit</strong> 10 rounds, 60s work / 30s rest (~20 min). Explosive power development. Focus: jump mechanics, pulling power, and anti-rotation core stability. Warm-up with Runna Easy Run before circuit.',
+            'Power Circuit W2': '<strong>Format: Circuit</strong> 10 rounds, 60s work / 30s rest (~20 min). Olympic lifting power. Focus: clean pulls, lateral explosiveness, rotational control. Warm-up with Runna Easy Run before circuit.',
+            'Power Circuit W3': '<strong>Format: Circuit</strong> 10 rounds, 60s work / 30s rest (~20 min). Max intent power. Focus: landmine explosiveness, broad jump distance, core tension. Warm-up with Runna Easy Run before circuit.',
+            'Core + Achilles W1': '<strong>Format: Straight Sets</strong>. Foundation tendon work. Focus: anti-rotation pressing, eccentric Achilles loading, adductor stability.',
+            'Core + Achilles W2': '<strong>Format: Straight Sets</strong>. Extended isometric holds. Focus: max tension planks, single-leg balance, heavier eccentric Achilles.',
+            'Core + Achilles W3': '<strong>Format: Straight Sets</strong>. Single-leg stability & intrinsic foot work. Focus: rotational chops, hip stability, foot mechanics.',
+            'Strength + Press W1': '<strong>Format: Straight Sets</strong>. Strength baseline. Focus: trap-bar deadlift, landmine press, accessory work at 60-70% 1RM. Follow with Extended Cycling (45 min Zone 2) for active recovery.',
+            'Cleans + Overhead Press W2': '<strong>Format: Straight Sets</strong>. Olympic lifting strength. Focus: power cleans, overhead pressing, dynamic power transfer. Follow with Extended Cycling (45 min Zone 2) for active recovery.',
+            'Bench + Rotation Power W3': '<strong>Format: Straight Sets</strong>. Upper body pressing + rotational power. Focus: bench press, med ball throws, landmine twists. Follow with Extended Cycling (45 min Zone 2) for active recovery.',
+            'Runna Intervals': '<strong>Format: Follow App</strong>. High-intensity aerobic power intervals for aerobic capacity building.',
+            'Runna Easy Run': '<strong>Format: Steady State, Zone 2</strong>. Aerobic base building. Warm-up before circuits or standalone conditioning.',
+            'Handball': '<strong>Format: Sport-Specific</strong>. Team training for agility, coordination, and sport conditioning.',
+            'Extended Cycling': '<strong>Format: Steady Ride, Zone 2</strong> 45 minutes. Active recovery cycling after strength work to support aerobic base without fatigue.',
+            'Long Run': '<strong>Format: Steady State, Zone 2</strong>. Aerobic development for endurance adaptation and weekly volume.',
+            'Power Circuit W3 (Deload)': '<strong>Format: Circuit Deload</strong> 6-7 rounds, 60s work / 30s rest (~12-14 min, -40% volume). Max intent, sharpen not fatigue. Deload week emphasis on movement quality.',
+            'Explosive + Tendon Testing': '<strong>Format: Testing</strong>. Max effort testing day. Measure: countermovement jump, broad jump, lateral jump, shot speed/wall impact, single-leg heel raise, tibialis endurance. Record all results.',
+            'Strength + Power Testing': '<strong>Format: Testing</strong>. Max effort strength testing day. Measure: trap-bar deadlift 3RM, bench press 3RM, landmine press 5RM, power clean best single, med ball rotational throw max distance, landmine twist peak load. Record all results. Follow with easy cycling (Zone 1-2) for recovery.'
+        };
+
+        // Comprehensive exercise database with details
+        const sessions = {
+            'Power Circuit W1': [
+                { name: 'Pull-Ups', sets: '3', reps: 'reps', load: 'Bodyweight (band-assisted if fatigued)', notes: 'Tall chest, elbows down, full ROM', type: 'circuit' },
+                { name: 'Box Jump', sets: '4-6', reps: 'reps', load: 'Base height / 50-60 cm', notes: 'Soft landing, step down, max intent not height', type: 'circuit' },
+                { name: 'Anti-Rotation Core', sets: '10-12', reps: 's hold', load: 'Pallof hold / band press / cable iso', notes: 'Brace like a sideways push', type: 'finisher' },
+                { name: 'Achilles Elasticity', sets: '10', reps: 'reps', load: 'Pogo hops or line hops', notes: 'Light, snappy, pain-free', type: 'finisher' }
+            ],
+            'Power Circuit W2': [
+                { name: 'Power Clean Pull', sets: '3', reps: 'reps', load: 'Light-moderate load', notes: 'Fast triple extension, reset each rep', type: 'circuit' },
+                { name: 'Lateral Box Jump', sets: '4-6', reps: 'reps', load: 'Base height / 50-60 cm', notes: 'Explosive sideways takeoff, soft landing', type: 'circuit' },
+                { name: 'Pallof Hold', sets: '10-12', reps: 's hold', load: 'Band or cable', notes: 'Brace like a sideways push', type: 'finisher' },
+                { name: 'Achilles Elasticity', sets: '10', reps: 'reps', load: 'Pogo hops or line hops', notes: 'Light, snappy, pain-free', type: 'finisher' }
+            ],
+            'Power Circuit W3': [
+                { name: 'Explosive Landmine Press', sets: '3', reps: 'reps', load: 'Light-moderate load', notes: 'Max bar speed, controlled catch', type: 'circuit' },
+                { name: 'Broad Jump', sets: '4-6', reps: 'reps', load: 'Base height / 50-60 cm', notes: 'Full recovery between reps', type: 'circuit' },
+                { name: 'RKC Plank', sets: '10-12', reps: 's hold', load: 'Bodyweight, max tension', notes: 'Glutes + abs squeezed hard', type: 'finisher' },
+                { name: 'Achilles Elasticity', sets: '10', reps: 'reps', load: 'Pogo hops or line hops', notes: 'Light, snappy, pain-free', type: 'finisher' }
+            ],
+            'Core + Achilles W1': [
+                { name: 'Pallof Press', sets: '3x12', reps: '', load: 'Band or cable', notes: 'Slow press out, resist rotation' },
+                { name: 'Hollow Hold', sets: '3x20', reps: 's', load: 'Bodyweight', notes: 'Ribs down, lower back flat' },
+                { name: 'Eccentric Heel Drop', sets: '3x15', reps: '', load: 'Bodyweight', notes: 'Slow eccentric, 3s down' },
+                { name: 'Tibialis Raise', sets: '3x20', reps: '', load: 'Bodyweight', notes: 'Full range' },
+                { name: 'Copenhagen Plank', sets: '2x20', reps: 's', load: 'Bodyweight', notes: 'Hips level, brace through adductors' }
+            ],
+            'Core + Achilles W2': [
+                { name: 'RKC Plank', sets: '3x20-30', reps: 's', load: 'Bodyweight, max tension', notes: 'Glutes + abs squeezed hard' },
+                { name: 'Dead Bug', sets: '3x10', reps: '', load: 'Bodyweight', notes: 'Slow, opposite arm/leg, ribs down' },
+                { name: 'Bent-Knee Heel Drop', sets: '3x15', reps: '', load: 'Bodyweight', notes: 'Slow eccentric, knee soft' },
+                { name: 'Tibialis Raise', sets: '3x20', reps: '', load: 'Bodyweight', notes: 'Full range' },
+                { name: 'Single-Leg Balance Reach', sets: '2x10', reps: '/side', load: 'Bodyweight', notes: 'Slow, controlled reach' }
+            ],
+            'Core + Achilles W3': [
+                { name: 'Cable / Band Chop', sets: '3x10', reps: '/side', load: 'Light-moderate load', notes: 'Rotate from hips, not lower back' },
+                { name: 'Hip Airplane', sets: '3x5', reps: '/side', load: 'Bodyweight', notes: 'Slow, controlled, stable stance leg' },
+                { name: 'Eccentric Heel Drop', sets: '3x15', reps: '', load: 'Bodyweight', notes: 'Slow eccentric, 3s down' },
+                { name: 'Tibialis Raise', sets: '3x20', reps: '', load: 'Bodyweight', notes: 'Full range' },
+                { name: 'Foot Intrinsic Work', sets: '2x20', reps: 's', load: 'Bodyweight', notes: 'Short-foot hold, toes relaxed' }
+            ],
+            'Strength + Press W1': [
+                { name: 'Trap-Bar Deadlift', sets: '3x5', reps: '', load: '60-70% 1RM', notes: 'Establish baseline load' },
+                { name: 'Single-Leg RDL', sets: '3x6', reps: '/side', load: 'Light DB', notes: 'Establish baseline load' },
+                { name: 'Landmine Press', sets: '3x8', reps: '', load: 'Establish baseline', notes: 'Controlled tempo' },
+                { name: 'Push-Ups', sets: '2x12', reps: '', load: 'Bodyweight', notes: 'Full lockout, tight core' },
+                { name: 'Cable Chops', sets: '3x10', reps: '', load: 'Light-moderate', notes: 'Rotate from hips' },
+                { name: 'Eccentric Heel Drop', sets: '3x15', reps: '', load: 'Bodyweight', notes: 'Slow eccentric, 3s down' },
+                { name: 'Tibialis Raise', sets: '2x20', reps: '', load: 'Bodyweight', notes: 'Full range' }
+            ],
+            'Cleans + Overhead Press W2': [
+                { name: 'Power Clean', sets: '5x3', reps: '', load: '40-50% 1RM', notes: 'Focus on triple extension' },
+                { name: 'Dumbbell Overhead Press', sets: '3x8', reps: '', load: 'Base load', notes: 'Strict press, no lean-back' },
+                { name: 'Push Press', sets: '2x5', reps: '', load: 'Moderate load', notes: 'Drive from legs, punch overhead' },
+                { name: 'Hollow Hold', sets: '3x20', reps: 's', load: 'Bodyweight', notes: 'Ribs down, lower back flat' },
+                { name: 'Bent-Knee Heel Drop', sets: '3x15', reps: '', load: 'Bodyweight', notes: 'Slow eccentric, knee soft' },
+                { name: 'Tibialis Raise', sets: '2x20', reps: '', load: 'Bodyweight', notes: 'Full range' }
+            ],
+            'Bench + Rotation Power W3': [
+                { name: 'Bench Press', sets: '3x5', reps: '', load: '65-70% 1RM', notes: 'Establish baseline' },
+                { name: 'Single-Arm Row', sets: '3x8', reps: '', load: 'Moderate DB', notes: 'Full stretch, no torso rotation' },
+                { name: 'Med Ball Rotational Throw', sets: '4x6', reps: '', load: 'Moderate intent', notes: 'Explosive, full recovery' },
+                { name: 'Landmine Twist', sets: '3x8', reps: '/side', load: 'Light-moderate', notes: 'Controlled rotation, braced core' },
+                { name: 'Eccentric Heel Drop', sets: '3x15', reps: '', load: 'Bodyweight', notes: 'Slow eccentric, 3s down' },
+                { name: 'Tibialis Raise', sets: '2x20', reps: '', load: 'Bodyweight', notes: 'Full range' }
+            ],
+            'Runna Intervals': [
+                { name: 'High-Intensity Running Intervals', sets: 'Per app', reps: '', load: 'Per app', notes: 'Follow Runna plan' }
+            ],
+            'Runna Easy Run': [
+                { name: 'Easy Run', sets: 'Per app', reps: '', load: 'Zone 2', notes: 'Aerobic base building' }
+            ],
+            'Handball': [
+                { name: 'Team Training', sets: '--', reps: '', load: '--', notes: 'Skill & conditioning' }
+            ],
+            'Extended Cycling': [
+                { name: 'Steady Ride', sets: '45 min', reps: '', load: 'Zone 2', notes: 'Active recovery' }
+            ],
+            'Long Run': [
+                { name: 'Endurance Run', sets: '--', reps: '', load: 'Zone 2', notes: 'Steady aerobic pace' }
+            ],
+            'Power Circuit W3 (Deload)': [
+                { name: 'Explosive Landmine Press', sets: '3', reps: 'reps', load: 'Light-moderate load', notes: 'Max bar speed, controlled catch', type: 'circuit' },
+                { name: 'Broad Jump', sets: '4-6', reps: 'reps', load: 'Max intent, -40% volume', notes: 'Full recovery between reps', type: 'circuit' },
+                { name: 'RKC Plank', sets: '10-12', reps: 's hold', load: 'Bodyweight, max tension', notes: 'Glutes + abs squeezed hard', type: 'finisher' },
+                { name: 'Achilles Elasticity', sets: '10', reps: 'reps', load: 'Pogo hops or line hops', notes: 'Light, snappy, pain-free', type: 'finisher' }
+            ],
+            'Explosive + Tendon Testing': [
+                { name: 'Countermovement Jump', sets: 'Max', reps: 'attempt', load: '--', notes: 'Record result' },
+                { name: 'Broad Jump', sets: 'Max', reps: 'attempt', load: '--', notes: 'Record result' },
+                { name: 'Lateral Jump', sets: 'Max', reps: 'attempt', load: '--', notes: 'Record result' },
+                { name: 'Shot Speed / Wall Impact Test', sets: 'Max', reps: 'attempt', load: '--', notes: 'Record result' },
+                { name: 'Single-Leg Heel Raise Test', sets: 'Max', reps: 'reps', load: '--', notes: 'Record result' },
+                { name: 'Tibialis Endurance Test', sets: 'Max', reps: 'reps', load: '--', notes: 'Record result' }
+            ],
+            'Strength + Power Testing': [
+                { name: 'Trap-Bar Deadlift', sets: '3RM', reps: '', load: '--', notes: 'Record result' },
+                { name: 'Bench Press', sets: '3RM', reps: '', load: '--', notes: 'Record result' },
+                { name: 'Landmine Press', sets: '5RM', reps: '', load: '--', notes: 'Record result' },
+                { name: 'Power Clean', sets: 'Best', reps: 'crisp single', load: '--', notes: 'Record result' },
+                { name: 'Med Ball Rotational Throw', sets: 'Max', reps: 'distance', load: '--', notes: 'Record result' },
+                { name: 'Landmine Twist', sets: 'Peak', reps: 'load', load: '--', notes: 'Record result' }
+            ]
+        };
+
+        const schedule = [
+            { week: 1, block: 'base', days: [
+                { name: 'Mon', session: 'Handball' },
+                { name: 'Tue', session: 'Power Circuit W1' },
+                { name: 'Wed', session: 'Runna Intervals' },
+                { name: 'Thu', session: 'Core + Achilles W1' },
+                { name: 'Fri', session: 'Strength + Press W1' },
+                { name: 'Sat', session: 'Long Run' },
+                { name: 'Sun', session: 'Rest' }
+            ]},
+            { week: 2, block: 'base', days: [
+                { name: 'Mon', session: 'Handball' },
+                { name: 'Tue', session: 'Power Circuit W2' },
+                { name: 'Wed', session: 'Runna Intervals' },
+                { name: 'Thu', session: 'Core + Achilles W2' },
+                { name: 'Fri', session: 'Cleans + Overhead Press W2' },
+                { name: 'Sat', session: 'Long Run' },
+                { name: 'Sun', session: 'Rest' }
+            ]},
+            { week: 3, block: 'base', days: [
+                { name: 'Mon', session: 'Handball' },
+                { name: 'Tue', session: 'Power Circuit W3' },
+                { name: 'Wed', session: 'Runna Intervals' },
+                { name: 'Thu', session: 'Core + Achilles W3' },
+                { name: 'Fri', session: 'Bench + Rotation Power W3' },
+                { name: 'Sat', session: 'Long Run' },
+                { name: 'Sun', session: 'Rest' }
+            ]},
+            { week: 4, block: 'build', days: [
+                { name: 'Mon', session: 'Handball' },
+                { name: 'Tue', session: 'Power Circuit W1' },
+                { name: 'Wed', session: 'Runna Intervals' },
+                { name: 'Thu', session: 'Core + Achilles W1' },
+                { name: 'Fri', session: 'Strength + Press W1' },
+                { name: 'Sat', session: 'Long Run' },
+                { name: 'Sun', session: 'Rest' }
+            ]},
+            { week: 5, block: 'build', days: [
+                { name: 'Mon', session: 'Handball' },
+                { name: 'Tue', session: 'Power Circuit W2' },
+                { name: 'Wed', session: 'Runna Intervals' },
+                { name: 'Thu', session: 'Core + Achilles W2' },
+                { name: 'Fri', session: 'Cleans + Overhead Press W2' },
+                { name: 'Sat', session: 'Long Run' },
+                { name: 'Sun', session: 'Rest' }
+            ]},
+            { week: 6, block: 'build', days: [
+                { name: 'Mon', session: 'Handball' },
+                { name: 'Tue', session: 'Power Circuit W3' },
+                { name: 'Wed', session: 'Runna Intervals' },
+                { name: 'Thu', session: 'Core + Achilles W3' },
+                { name: 'Fri', session: 'Bench + Rotation Power W3' },
+                { name: 'Sat', session: 'Long Run' },
+                { name: 'Sun', session: 'Rest' }
+            ]},
+            { week: 7, block: 'peak', days: [
+                { name: 'Mon', session: 'Handball' },
+                { name: 'Tue', session: 'Power Circuit W1' },
+                { name: 'Wed', session: 'Runna Intervals' },
+                { name: 'Thu', session: 'Core + Achilles W1' },
+                { name: 'Fri', session: 'Strength + Press W1' },
+                { name: 'Sat', session: 'Long Run' },
+                { name: 'Sun', session: 'Rest' }
+            ]},
+            { week: 8, block: 'peak', days: [
+                { name: 'Mon', session: 'Handball' },
+                { name: 'Tue', session: 'Power Circuit W2' },
+                { name: 'Wed', session: 'Runna Intervals' },
+                { name: 'Thu', session: 'Core + Achilles W2' },
+                { name: 'Fri', session: 'Cleans + Overhead Press W2' },
+                { name: 'Sat', session: 'Long Run' },
+                { name: 'Sun', session: 'Rest' }
+            ]},
+            { week: 9, block: 'peak', days: [
+                { name: 'Mon', session: 'Handball' },
+                { name: 'Tue', session: 'Power Circuit W3 (Deload)' },
+                { name: 'Wed', session: 'Runna Intervals' },
+                { name: 'Thu', session: 'Explosive + Tendon Testing' },
+                { name: 'Fri', session: 'Strength + Power Testing' },
+                { name: 'Sat', session: 'Long Run' },
+                { name: 'Sun', session: 'Rest' }
+            ]}
+        ];
+
+        // PIN Entry
+        document.querySelectorAll('.pin-btn[data-num]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentPin.length < 4) {
+                    currentPin += btn.dataset.num;
+                    updatePinDisplay();
+                }
+            });
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            currentPin = '';
+            updatePinDisplay();
+        });
+
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            if (currentPin === CORRECT_PIN) {
+                localStorage.setItem('loggedIn', 'true');
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appScreen').classList.add('active');
+                renderSchedule('all');
+            } else {
+                currentPin = '';
+                updatePinDisplay();
+                alert('Incorrect PIN');
+            }
+        });
+
+        function updatePinDisplay() {
+            document.querySelectorAll('.pin-digit').forEach((digit, i) => {
+                if (i < currentPin.length) {
+                    digit.textContent = '●';
+                    digit.classList.add('filled');
+                } else {
+                    digit.textContent = '';
+                    digit.classList.remove('filled');
+                }
+            });
+        }
+
+        function buildExerciseList(sessionName) {
+            const exercises = sessions[sessionName] || [];
+            if (exercises.length === 0) return '<div style="color: #94a3b8; font-size: 0.85rem;">No exercises listed</div>';
+
+            const circuitEx = exercises.filter(e => e.type === 'circuit');
+            const finisherEx = exercises.filter(e => e.type === 'finisher');
+            const otherEx = exercises.filter(e => !e.type);
+
+            let html = '';
+
+            if (circuitEx.length > 0) {
+                html += `<div class="circuit-section">
+                    <div class="circuit-header">
+                        <span class="circuit-icon">⊛</span>
+                        Circuit (10 rounds, 60s on/30s rest)
+                    </div>`;
+                html += circuitEx.map(ex => `
+                    <div class="exercise-list-item">
+                        <div class="exercise-list-name">${ex.name}</div>
+                        <div class="exercise-list-detail">${ex.sets}${ex.reps ? ' ' + ex.reps : ''} | ${ex.load}</div>
+                    </div>
+                `).join('');
+                html += '</div>';
+            }
+
+            if (finisherEx.length > 0) {
+                html += `<div class="finisher-section">
+                    <div class="finisher-header">
+                        <span class="finisher-icon">✓</span>
+                        Finishers (after circuit)
+                    </div>`;
+                html += finisherEx.map(ex => `
+                    <div class="exercise-list-item">
+                        <div class="exercise-list-name">${ex.name}</div>
+                        <div class="exercise-list-detail">${ex.sets}${ex.reps ? ' ' + ex.reps : ''} | ${ex.load}</div>
+                    </div>
+                `).join('');
+                html += '</div>';
+            }
+
+            if (otherEx.length > 0) {
+                html += '<div style="background: #0f172a; border-radius: 6px; padding: 1rem;">';
+                html += otherEx.map(ex => `
+                    <div class="exercise-list-item">
+                        <div class="exercise-list-name">${ex.name}</div>
+                        <div class="exercise-list-detail">${ex.sets}${ex.reps ? ' ' + ex.reps : ''} | ${ex.load}</div>
+                    </div>
+                `).join('');
+                html += '</div>';
+            }
+
+            return html;
+        }
+
+        function renderSchedule(filter = 'all') {
+            const grid = document.getElementById('scheduleGrid');
+            grid.innerHTML = '';
+
+            const filtered = schedule.filter(w => filter === 'all' || w.block === filter);
+
+            filtered.forEach(week => {
+                const card = document.createElement('div');
+                card.className = 'week-card';
+                card.innerHTML = `
+                    <div class="week-header" data-week="${week.week}">
+                        <span>Week ${week.week}</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="week-content">
+                        ${week.days.map(day => `
+                            <div class="day-block">
+                                <div class="day-name">${day.name}</div>
+                                <div class="day-session">${day.session}</div>
+                                ${day.session !== 'Rest' ? `
+                                    <button class="session-btn" data-session="${day.session}" data-day="${day.name}" data-week="${week.week}">Show Exercises</button>
+                                    <div class="session-exercises" id="ex-w${week.week}-${day.name}-${day.session.replace(/\s+/g, '-')}">
+                                        ${buildExerciseList(day.session)}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            document.querySelectorAll('.week-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    content.classList.toggle('expanded');
+                    this.querySelector('span:last-child').textContent = content.classList.contains('expanded') ? '▲' : '▼';
+                });
+            });
+
+            document.querySelectorAll('.session-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const sessionName = this.dataset.session;
+                    const day = this.dataset.day;
+                    const week = this.dataset.week;
+                    const exId = `ex-w${week}-${day}-${sessionName.replace(/\s+/g, '-')}`;
+                    const exDiv = document.getElementById(exId);
+                    exDiv.classList.toggle('expanded');
+                    this.textContent = exDiv.classList.contains('expanded') ? 'Hide Exercises' : 'Show Exercises';
+                    if (exDiv.classList.contains('expanded')) {
+                        this.scroll({ behavior: 'smooth' });
+                    }
+                });
+            });
+        }
+
+        let currentModalExercise = null;
+
+        function showSessionModal(sessionName) {
+            document.getElementById('sessionName').textContent = sessionName;
+            const exercises = sessions[sessionName] || [];
+            const description = sessionDescriptions[sessionName] || '';
+
+            let html = '';
+            if (description) {
+                html += `<div class="exercise-notes" style="margin-bottom: 1rem;"><strong>Purpose:</strong> ${description}</div>`;
+            }
+            html += `<button class="export-btn" onclick="exportWorkout('${sessionName}')">📥 Export to Garmin</button>`;
+            html += '<div class="exercises-list" style="margin-top: 1rem;">';
+            exercises.forEach((ex, idx) => {
+                html += `
+                    <div class="exercise-item">
+                        <div class="exercise-name">${ex.name}</div>
+                        <div class="exercise-detail">
+                            <span class="exercise-label">Sets × Reps:</span> ${ex.sets}${ex.reps}
+                        </div>
+                        <div class="exercise-detail">
+                            <span class="exercise-label">Load:</span> ${ex.load}
+                        </div>
+                        <div class="exercise-detail">
+                            <span class="exercise-label">Notes:</span> ${ex.notes}
+                        </div>
+                        <button class="session-btn" onclick="showExerciseVideo('${ex.name.replace(/'/g, "\\'")}', ${idx}, '${sessionName.replace(/'/g, "\\'")}')">▶ Watch Video</button>
+                    </div>
+                `;
+            });
+            html += '</div>';
+
+            document.getElementById('sessionDetails').innerHTML = html;
+            document.getElementById('sessionModal').classList.add('active');
+        }
+
+        function showExerciseVideo(exerciseName, idx, sessionName) {
+            const exercises = sessions[sessionName] || [];
+            const exercise = exercises[idx];
+
+            let videoHtml = `
+                <div class="modal-content" style="max-width: 100%; width: 100%; padding: 1.5rem;">
+                    <div class="modal-header">
+                        <h2>${exercise.name} - Video</h2>
+                        <button class="close-modal" onclick="closeSessionModal()">&times;</button>
+                    </div>
+                    <iframe width="100%" height="400"
+                        style="border-radius: 8px; border: 1px solid #334155;"
+                        src="https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(exercise.name)}"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                    <div style="margin-top: 1rem;">
+                        <input type="text" id="videoSearch" placeholder="Search YouTube..." value="${exercise.name}"
+                            style="width: 100%; padding: 0.75rem; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #e2e8f0; margin-bottom: 0.5rem;">
+                        <button class="export-btn" onclick="updateExerciseVideo('${exercise.name}')">Search</button>
+                        <button class="session-btn" onclick="closeSessionModal()" style="margin-top: 0.5rem; background: #334155;">Back</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('sessionModal').innerHTML = videoHtml;
+        }
+
+        function updateExerciseVideo(query) {
+            const searchInput = document.getElementById('videoSearch');
+            const iframe = document.querySelector('iframe');
+            if (iframe) {
+                iframe.src = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(searchInput.value)}`;
+            }
+        }
+
+        function exportWorkout(sessionName) {
+            const exercises = sessions[sessionName] || [];
+            const tcx = generateWorkoutTCX(sessionName, exercises);
+            downloadFile(tcx, `${sessionName.replace(/\s+/g, '-')}.tcx`, 'application/xml');
+        }
+
+        function generateWorkoutTCX(sessionName, exercises) {
+            let tcxContent = `<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2">
+  <Workouts>
+    <Workout Sport="Other">
+      <Name>${sessionName}</Name>`;
+
+            exercises.forEach((ex, idx) => {
+                tcxContent += `
+      <Step>
+        <StepName>${ex.name}</StepName>
+        <Duration><TimeSeconds>600</TimeSeconds></Duration>
+        <Intensity>Active</Intensity>
+        <Notes>Sets: ${ex.sets}${ex.reps} | Load: ${ex.load} | ${ex.notes}</Notes>
+      </Step>`;
+            });
+
+            tcxContent += `
+    </Workout>
+  </Workouts>
+</TrainingCenterDatabase>`;
+            return tcxContent;
+        }
+
+        function loadYouTubeVideo(query) {
+            if (!query) return;
+            window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, '_blank');
+        }
+
+        function closeSessionModal() {
+            document.getElementById('sessionModal').classList.remove('active');
+        }
+
+        document.querySelectorAll('.control-btn[data-block]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.control-btn[data-block]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                renderSchedule(this.dataset.block);
+            });
+        });
+
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            const tcx = generateTCX();
+            downloadFile(tcx, 'hybrid-training.tcx', 'application/xml');
+        });
+
+        function generateTCX() {
+            let tcxContent = `<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2">
+  <Workouts>`;
+
+            schedule.forEach(week => {
+                week.days.forEach(day => {
+                    if (day.session !== 'Rest') {
+                        const exercises = sessions[day.session] || [];
+                        tcxContent += `
+    <Workout Sport="Other">
+      <Name>W${week.week} ${day.name}: ${day.session}</Name>
+      <Step>
+        <StepName>${day.session}</StepName>
+        <Duration><TimeSeconds>3600</TimeSeconds></Duration>
+        <Intensity>Active</Intensity>
+        <Notes>${exercises.map(e => `${e.name}: ${e.sets}${e.reps}`).join(' | ')}</Notes>
+      </Step>
+    </Workout>`;
+                    }
+                });
+            });
+
+            tcxContent += `
+  </Workouts>
+</TrainingCenterDatabase>`;
+            return tcxContent;
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            document.getElementById('appScreen').classList.remove('active');
+            document.getElementById('loginScreen').style.display = 'flex';
+            currentPin = '';
+            updatePinDisplay();
+        });
+
+        if (localStorage.getItem('loggedIn') === 'true') {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appScreen').classList.add('active');
+            renderSchedule('all');
+        }
+    </script>
+</body>
+</html>

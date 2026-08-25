@@ -1,0 +1,76 @@
+@if (session(); as session) {
+  <div class="page">
+    <div class="header">
+      <a routerLink="/" class="back-link">&larr; Schedule</a>
+      <app-dark-mode-toggle></app-dark-mode-toggle>
+    </div>
+
+    <h1>{{ session.name }}</h1>
+    <div class="purpose" [innerHTML]="session.description"></div>
+
+    @if (circuitExercises().length) {
+      <div class="circuit-section">
+        <div class="section-header">Circuit &mdash; 10 rounds, 60s on / 30s rest</div>
+        @for (ex of circuitExercises(); track ex.name) {
+          <div class="exercise-item">
+            <div class="exercise-name">{{ ex.name }}</div>
+            <div class="exercise-detail"><span class="label">Sets × Reps:</span> {{ ex.sets }}{{ ex.reps }}</div>
+            <div class="exercise-detail"><span class="label">Load:</span> {{ ex.load }}</div>
+            <div class="exercise-detail"><span class="label">Notes:</span> {{ ex.notes }}</div>
+            @if (hasVideo(ex)) {
+              <button class="action-btn video-btn" (click)="toggleVideo(ex)">{{ openVideoFor() === ex ? 'Hide Video' : 'Watch Video' }}</button>
+              @if (openVideoFor() === ex) {
+                <iframe class="video-frame" [src]="videoEmbedUrl(ex)" title="{{ ex.name }} demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              }
+            } @else {
+              <a class="action-btn video-btn" [href]="videoSearchUrl(ex)" target="_blank" rel="noopener">Search Video &#8599;</a>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    @if (finisherExercises().length) {
+      <div class="finisher-section">
+        <div class="section-header">Finishers &mdash; after circuit</div>
+        @for (ex of finisherExercises(); track ex.name) {
+          <div class="exercise-item">
+            <div class="exercise-name">{{ ex.name }}</div>
+            <div class="exercise-detail"><span class="label">Sets × Reps:</span> {{ ex.sets }}{{ ex.reps }}</div>
+            <div class="exercise-detail"><span class="label">Load:</span> {{ ex.load }}</div>
+            <div class="exercise-detail"><span class="label">Notes:</span> {{ ex.notes }}</div>
+            @if (hasVideo(ex)) {
+              <button class="action-btn video-btn" (click)="toggleVideo(ex)">{{ openVideoFor() === ex ? 'Hide Video' : 'Watch Video' }}</button>
+              @if (openVideoFor() === ex) {
+                <iframe class="video-frame" [src]="videoEmbedUrl(ex)" title="{{ ex.name }} demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              }
+            } @else {
+              <a class="action-btn video-btn" [href]="videoSearchUrl(ex)" target="_blank" rel="noopener">Search Video &#8599;</a>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    @if (otherExercises().length) {
+      <div class="exercises-list">
+        @for (ex of otherExercises(); track ex.name) {
+          <div class="exercise-item">
+            <div class="exercise-name">{{ ex.name }}</div>
+            <div class="exercise-detail"><span class="label">Sets × Reps:</span> {{ ex.sets }}{{ ex.reps }}</div>
+            <div class="exercise-detail"><span class="label">Load:</span> {{ ex.load }}</div>
+            <div class="exercise-detail"><span class="label">Notes:</span> {{ ex.notes }}</div>
+            @if (hasVideo(ex)) {
+              <button class="action-btn video-btn" (click)="toggleVideo(ex)">{{ openVideoFor() === ex ? 'Hide Video' : 'Watch Video' }}</button>
+              @if (openVideoFor() === ex) {
+                <iframe class="video-frame" [src]="videoEmbedUrl(ex)" title="{{ ex.name }} demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              }
+            } @else {
+              <a class="action-btn video-btn" [href]="videoSearchUrl(ex)" target="_blank" rel="noopener">Search Video &#8599;</a>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

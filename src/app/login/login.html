@@ -1,0 +1,24 @@
+<div class="login-screen">
+  <div class="login-card">
+    <h1>Hybrid Training</h1>
+    <p>Enter 4-digit PIN</p>
+    <div class="pin-display">
+      @for (i of [0, 1, 2, 3]; track i) {
+        <div class="pin-digit" [class.filled]="pin().length > i">
+          {{ pin().length > i ? '●' : '' }}
+        </div>
+      }
+    </div>
+    @if (error()) {
+      <p class="error">Incorrect PIN</p>
+    }
+    <div class="pin-pad">
+      @for (n of [1,2,3,4,5,6,7,8,9]; track n) {
+        <button class="pin-btn" (click)="digit(n + '')">{{ n }}</button>
+      }
+      <button class="pin-btn action" (click)="clear()">Clear</button>
+      <button class="pin-btn" (click)="digit('0')">0</button>
+      <button class="pin-btn submit" (click)="submit()">Submit</button>
+    </div>
+  </div>
+</div>
