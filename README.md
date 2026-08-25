@@ -24,17 +24,13 @@ npm run build
 ```
 
 Local dev uses base href `/`; the production build bakes in `/training/`
-via `deploy.sh` (`ng build --base-href=/training/`) for GitHub Pages.
+(`ng build --base-href=/training/`) for GitHub Pages.
 
 ## Deploy
 
-```
-./deploy.sh
-```
-
-Builds the app and force-pushes `dist/hybrid-training/browser` to the
-`gh-pages` branch of this repo's `origin` remote. Enable GitHub Pages for
-that branch in the repo settings (Settings → Pages → Source: `gh-pages`).
+`.github/workflows/deploy.yml` builds and deploys on every push to `main`
+(or manually via the Actions tab). One-time setup: Settings → Pages →
+Source: **GitHub Actions** (not "Deploy from a branch").
 
 `legacy/index.html` is the original single-file static version kept for
 reference; it is not part of the build.
